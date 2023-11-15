@@ -1,21 +1,17 @@
-import pytest
+import time
 from selenium import webdriver
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
 
+# задаём опции открытия браузера
+options = Options()
+# на весь экран
+options.add_argument("--start-maximized")
+driver = webdriver.Chrome(options=options)
 
-@pytest.fixture
-def driver(request):
-    wd = webdriver.Chrome(chrome_binary="C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe")
-    print(wd.capabilities)
-    request.addfinalizer(wd.quit)
-    print("ok 200")
-    return wd
+time.sleep(3)
 
+# Метод get открыает сайт по ссылке
+driver.get("https://www.google.com/")
+time.sleep(3)
 
-def test_example(driver):
-    driver.get("http://www.google.com/")
-    driver.find_element_by_name("q").send_keys("webdriver")
-    driver.find_element_by_name("btnG").click()
-    WebDriverWait(driver, 10).until(EC.title_is("webdriver - Поиск в Google"))
-    print("ok 200")
+driver.quit()
