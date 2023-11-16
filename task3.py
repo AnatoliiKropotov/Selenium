@@ -1,3 +1,4 @@
+import traceback
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -12,7 +13,6 @@ def login_admin():
         options.add_argument("--start-maximized")
         driver = webdriver.Chrome(options=options)
 
-
         # Метод get открыdает сайт по ссылке
         driver.get("http://localhost/litecart/admin")
 
@@ -24,7 +24,7 @@ def login_admin():
         driver.quit()
 
     except Exception:
-        print("Возникла ошибка")
+        print("Возникла ошибка: ", traceback.format_exc())
         driver.quit()
 
 login_admin()
