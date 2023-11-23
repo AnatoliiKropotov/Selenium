@@ -19,7 +19,7 @@ def login_admin():
         # заполняем форму с логином/паролем, кликаем по кнопке "логин"
         elem_login = driver.find_element(By.NAME, "username").send_keys("admin")
         elem_pass = driver.find_element(By.NAME, "password").send_keys("admin")
-        elem__login_button = driver.find_element(By.NAME, "login").click()
+        elem_login_button = driver.find_element(By.NAME, "login").click()
 
         driver.quit()
 
