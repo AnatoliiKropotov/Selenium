@@ -5,19 +5,23 @@ from selenium.webdriver.common.by import By
 import time
 
 
-def check_tab():
-    try:
-        # задаём опции открытия браузера
-        options = Options()
+def check_sorted_list(list_on_page):
+    # проверка на сортировку стран
+    list_after_sort = sorted(list_on_page)
+    if list_on_page == list_after_sort:
+        print("Страны на странице отсортированы")
+    else:
+        print("Страны на странице НЕ отсортированы")
+    return
 
-        # на весь экран
+
+def check_sorted_countries():
+    try:
+        options = Options()
         options.add_argument("--start-maximized")
 
-        # создаём объект driver
         driver = webdriver.Chrome(options=options)
         driver.implicitly_wait(3)
-
-        # Метод get открывает сайт по ссылке
         driver.get("http://localhost/litecart/admin/?app=countries&doc=countries")
 
         # заходим в админку
@@ -29,19 +33,13 @@ def check_tab():
         list_countries_web = driver.find_elements(By.CLASS_NAME, "row")
 
         # список python для проверки сортировки
-        list_check_sort = []
-
+        list_on_page = []
         for i in list_countries_web:
             country = i.find_element(By.TAG_NAME, "a")
-            list_check_sort.append(country.text)
+            list_on_page.append(country.text)
 
-        list_after_sorted = sorted(list_check_sort)
+        check_sorted_list(list_on_page)
 
-        # проверка на сортировку стран
-        if list_check_sort == list_after_sorted:
-            print("Страны на странице отсортированы")
-        else:
-            print("Страны на странице НЕ отсортированы")
 
         # проверяем вложенные страны на сортировку
         for country in list_countries_web:
@@ -77,4 +75,4 @@ def check_tab():
         return
 
 
-check_tab()
+check_sorted_countries()
