@@ -45,7 +45,6 @@ def check_sorted_countries():
         # проверяем вложенные страны на сортировку
         name_country_list = []
         stop = True
-
         while stop:
             list_countries_web = driver.find_elements(By.CLASS_NAME, "row")
             for country in list_countries_web:
@@ -53,9 +52,7 @@ def check_sorted_countries():
                 if int(list_td_tag[5].text) != 0 and list_td_tag[4].text not in name_country_list:
                     name_country = list_td_tag[4].text
                     name_country_list.append(name_country)
-
                     country.find_element(By.TAG_NAME, "a").click()
-
                     list_country_in = []
                     tr_tag_list = driver.find_element(By.CLASS_NAME, "dataTable").find_elements(By.TAG_NAME, "tr")
                     for tr in tr_tag_list:
