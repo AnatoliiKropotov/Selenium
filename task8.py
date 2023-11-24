@@ -2,16 +2,15 @@ import traceback
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-import time
 
 
-def check_sorted_list(list_on_page):
-    # проверка на сортировку стран
+def check_sorted_list(list_on_page, parametr):
+    # проверка на сортировку списков
     list_after_sort = sorted(list_on_page)
     if list_on_page == list_after_sort:
-        print("Страны на странице отсортированы")
+        print(f"Страны на странице {parametr} отсортированы")
     else:
-        print("Страны на странице НЕ отсортированы")
+        print(f"Страны на странице {parametr} НЕ отсортированы")
     return
 
 
@@ -24,22 +23,21 @@ def check_sorted_countries():
         driver.implicitly_wait(3)
         driver.get("http://localhost/litecart/admin/?app=countries&doc=countries")
 
-        # заходим в админку
+        # логинимся
         elem_login = driver.find_element(By.NAME, "username").send_keys("admin")
         elem_pass = driver.find_element(By.NAME, "password").send_keys("admin")
         elem_login_button = driver.find_element(By.NAME, "login").click()
 
-        # список стран на странице
+        # получаем список стран на странице
+        place_where_check = driver.find_element(By.TAG_NAME, "h1").text
         list_countries_web = driver.find_elements(By.CLASS_NAME, "row")
 
-        # список python для проверки сортировки
+        # формируем список python для проверки сортировки
         list_on_page = []
         for i in list_countries_web:
             country = i.find_element(By.TAG_NAME, "a")
             list_on_page.append(country.text)
-
-        check_sorted_list(list_on_page)
-
+        check_sorted_list(list_on_page, place_where_check)
 
         # проверяем вложенные страны на сортировку
         for country in list_countries_web:
@@ -59,12 +57,7 @@ def check_sorted_countries():
                     td_tag_list = tr.find_elements(By.TAG_NAME, "input")
                     if len(td_tag_list) == 3:
                         list_country_in.append(td_tag_list[2].get_attribute("value"))
-                list_country_in_sorted = sorted(list_country_in)
-                if list_country_in == list_country_in_sorted:
-                    print(f'Cписок стран внутри {name_country} отсортирован')
-                else:
-                    print(f'Cписок стран внутри {name_country} НЕ отсортирован')
-
+                check_sorted_list(list_country_in, name_country)
                 break
 
 
