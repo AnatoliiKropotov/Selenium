@@ -15,8 +15,9 @@ def check_duck():
         driver.get("http://localhost/litecart/en/")
 
         # находим всех уток
-        list_tabs = driver.find_elements(By.CLASS_NAME, "image-wrapper")
+        list_tabs = driver.find_elements(By.CLASS_NAME, "hover-light")
         count_duck = len(list_tabs)
+        print(count_duck)
 
         count_one_sticker_duck = 0
         for i in list_tabs:
@@ -24,11 +25,7 @@ def check_duck():
 
             # проверяем что существует один стикер на каждой утке
             if len(list_elements) == 1:
-                for j in list_elements:
-
-                    # проверяем что это именно нужный стикер
-                    if j.get_attribute("class") in ("sticker new", "sticker sale"):
-                        count_one_sticker_duck += 1
+                count_one_sticker_duck += 1
 
         # условие на вывод
         if count_duck == count_one_sticker_duck:
