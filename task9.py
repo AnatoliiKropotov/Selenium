@@ -36,10 +36,6 @@ def geo_zones():
         count = 0
         while count != total_countries:
 
-            # находим все страны с геозонами
-            list_zone = driver.find_elements(By.CLASS_NAME, "row")
-            total_countries = len(list_zone)
-
             # заходим на страницу страны
             for country in list_zone:
                 button = country.find_element(By.TAG_NAME, "a")
@@ -61,8 +57,11 @@ def geo_zones():
                 check_sorted_list(list_selected_countries, country_name)
 
                 driver.get("http://localhost/litecart/admin/?app=geo_zones&doc=geo_zones")
+                list_zone = driver.find_elements(By.CLASS_NAME, "row")
                 count += 1
+
                 break
+        return
 
     except Exception:
         print("Возникла ошибка: ", traceback.format_exc())
