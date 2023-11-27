@@ -17,14 +17,14 @@ def check_duck():
         # находим всех уток
         list_tabs = driver.find_elements(By.CLASS_NAME, "hover-light")
         count_duck = len(list_tabs)
-        print(count_duck)
 
+        # проверяем наличие стикеров у уток
         count_one_sticker_duck = 0
         for i in list_tabs:
-            list_elements = i.find_elements(By.TAG_NAME, "div")
+            div_sticker = i.find_element(By.CLASS_NAME, "image-wrapper").find_elements(By.TAG_NAME, "div")
 
-            # проверяем что существует один стикер на каждой утке
-            if len(list_elements) == 1:
+            # проверяем что стикер 1
+            if len(div_sticker) == 1:
                 count_one_sticker_duck += 1
 
         # условие на вывод
