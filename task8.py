@@ -56,9 +56,10 @@ def check_sorted_countries():
                     list_country_in = []
                     tr_tag_list = driver.find_element(By.CLASS_NAME, "dataTable").find_elements(By.TAG_NAME, "tr")
                     for tr in tr_tag_list:
-                        td_tag_list = tr.find_elements(By.TAG_NAME, "input")
-                        if len(td_tag_list) == 3:
-                            list_country_in.append(td_tag_list[2].get_attribute("value"))
+                        td_tag_list = tr.find_elements(By.TAG_NAME, "td")
+                        if td_tag_list and td_tag_list[2].text != "":
+                            list_country_in.append(td_tag_list[2].text)
+
                     check_sorted_list(list_country_in, name_country)
                     driver.get("http://localhost/litecart/admin/?app=countries&doc=countries")
                     break
