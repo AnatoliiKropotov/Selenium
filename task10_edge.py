@@ -139,7 +139,7 @@ def main():
         check_price_style_campaign(color_to_tuple(campaign_price_color_inner), campaign_price_style_inner, page)
         check_price_size(regular_price_height_inner, regular_price_width_inner, campaign_price_height_inner,
                          campaign_price_width_inner, page)
-
+        driver.quit()
         return
 
     except Exception:
