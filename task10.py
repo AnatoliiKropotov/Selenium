@@ -147,5 +147,4 @@ def main():
         driver.quit()
         return
 
-
 main()
