@@ -38,9 +38,8 @@ def check_price_style_campaign(campaign_price_color, campaign_price_style, page)
 
 
 # д) акционная цена крупнее, чем обычная (это тоже надо проверить на каждой странице независимо)
-def check_price_size(regular_price_height, regular_price_width, campaign_price_height, campaign_price_width, page):
-    if (campaign_price_height >= regular_price_height and campaign_price_width > regular_price_width or
-            campaign_price_height > regular_price_height and campaign_price_width >= regular_price_width):
+def check_price_size(regular_price_size, campaign_price_size, page):
+    if campaign_price_size > regular_price_size:
         print(f"{page}: акционная цена крупнее, чем обычная:", True)
     else:
         print(f"{page}: акционная цена крупнее, чем обычная:", False)
@@ -51,6 +50,13 @@ def color_to_tuple(color):
     color_str = color.replace("rgb", "").strip("()")
     color = tuple(int(item) for item in color_str.split(','))
     return color
+
+
+# переводим size во float
+def size_to_float(size):
+    size_str = size.replace("px", "")
+    size = float(size_str)
+    return size
 
 
 # получения значений товара
@@ -70,22 +76,19 @@ def main():
         regular_price_color = block_campaigns.find_element(By.CLASS_NAME, "regular-price").value_of_css_property(
             "color")
         regular_price_style = block_campaigns.find_element(By.CLASS_NAME, "regular-price").tag_name
-        regular_price_height = block_campaigns.find_element(By.CLASS_NAME, "regular-price").get_property("offsetHeight")
-        regular_price_width = block_campaigns.find_element(By.CLASS_NAME, "regular-price").get_property(
-            "offsetWidth")
+        regular_price_size = block_campaigns.find_element(By.CLASS_NAME, "regular-price").value_of_css_property(
+            'font-size')
         campaign_price = block_campaigns.find_element(By.CLASS_NAME, "campaign-price").text
         campaign_price_color = block_campaigns.find_element(By.CLASS_NAME, "campaign-price").value_of_css_property(
             "color")
         campaign_price_style = block_campaigns.find_element(By.CLASS_NAME, "campaign-price").tag_name
-        campaign_price_height = block_campaigns.find_element(By.CLASS_NAME, "campaign-price").get_property(
-            "offsetHeight")
-        campaign_price_width = block_campaigns.find_element(By.CLASS_NAME, "campaign-price").get_property(
-            "offsetWidth")
+        campaign_price_size = block_campaigns.find_element(By.CLASS_NAME, "campaign-price").value_of_css_property(
+            'font-size')
 
         # для наглядности выводим найденные параметры
         main_page_values = (duck_name, regular_price, regular_price_color, regular_price_style,
-                            campaign_price, campaign_price_color, campaign_price_style, regular_price_height,
-                            regular_price_width, campaign_price_height, campaign_price_width)
+                            campaign_price, campaign_price_color, campaign_price_style, regular_price_size,
+                            campaign_price_size)
         print(main_page_values)
 
         # переходим внуть товара
@@ -98,25 +101,20 @@ def main():
         regular_price_color_inner = block_campaigns.find_element(By.CLASS_NAME, "regular-price").value_of_css_property(
             "color")
         regular_price_style_inner = block_campaigns.find_element(By.CLASS_NAME, "regular-price").tag_name
-        regular_price_height_inner = block_campaigns.find_element(By.CLASS_NAME, "regular-price").get_property(
-            "offsetHeight")
-        regular_price_width_inner = block_campaigns.find_element(By.CLASS_NAME, "regular-price").get_property(
-            "offsetWidth")
+        regular_price_size_inner = block_campaigns.find_element(By.CLASS_NAME, "regular-price").value_of_css_property(
+            'font-size')
         campaign_price_inner = block_campaigns.find_element(By.CLASS_NAME, "campaign-price").text
         campaign_price_color_inner = block_campaigns.find_element(By.CLASS_NAME,
                                                                   "campaign-price").value_of_css_property(
             "color")
         campaign_price_style_inner = block_campaigns.find_element(By.CLASS_NAME, "campaign-price").tag_name
-        campaign_price_height_inner = block_campaigns.find_element(By.CLASS_NAME, "campaign-price").get_property(
-            "offsetHeight")
-        campaign_price_width_inner = block_campaigns.find_element(By.CLASS_NAME, "campaign-price").get_property(
-            "offsetWidth")
+        campaign_price_size_inner = block_campaigns.find_element(By.CLASS_NAME, "campaign-price").value_of_css_property(
+            'font-size')
 
         # для наглядности выводим найденные параметры
         values_inner = (duck_name_inner, regular_price_inner, regular_price_color_inner, regular_price_style_inner,
                         campaign_price_inner, campaign_price_color_inner, campaign_price_style_inner,
-                        regular_price_height_inner, regular_price_width_inner, campaign_price_height_inner,
-                        campaign_price_width_inner)
+                        regular_price_size_inner, campaign_price_size_inner)
         print(values_inner)
 
         # делаем проверки
@@ -131,12 +129,11 @@ def main():
         page = "Главная страница"
         check_price_style_regular(color_to_tuple(regular_price_color), regular_price_style, page)
         check_price_style_campaign(color_to_tuple(campaign_price_color), campaign_price_style, page)
-        check_price_size(regular_price_height, regular_price_width, campaign_price_height, campaign_price_width, page)
+        check_price_size(size_to_float(regular_price_size), size_to_float(campaign_price_size), page)
         page = "Карточка товара"
         check_price_style_regular(color_to_tuple(regular_price_color_inner), regular_price_style_inner, page)
         check_price_style_campaign(color_to_tuple(campaign_price_color_inner), campaign_price_style_inner, page)
-        check_price_size(regular_price_height_inner, regular_price_width_inner, campaign_price_height_inner,
-                         campaign_price_width_inner, page)
+        check_price_size(size_to_float(regular_price_size_inner), size_to_float(campaign_price_size_inner), page)
         driver.quit()
         return
 
@@ -144,5 +141,6 @@ def main():
         print("Возникла ошибка: ", traceback.format_exc())
         driver.quit()
         return
+
 
 main()
