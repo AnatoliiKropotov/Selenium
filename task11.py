@@ -87,3 +87,4 @@ driver.find_element(By.CSS_SELECTOR, '[name=login]').click()
 # logout
 driver.find_element(By.XPATH, '//a[text()="Logout"]').click()
 
+driver.quit()
