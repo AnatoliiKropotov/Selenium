@@ -29,7 +29,6 @@ driver.find_element(By.CSS_SELECTOR, '[name=quantity]').send_keys("10")
 # получаем путь к картинке (она должна лежать в том же каталоге, что и данный скрипт)
 absolute_path = os.getcwd()
 absolute_path_image = os.getcwd() + "\\task12_image.jpg"
-print(absolute_path_image)
 
 # прописваем путь к картинке в DOM
 driver.find_element(By.CSS_SELECTOR, '[name^="new_images"]').send_keys(absolute_path_image)
