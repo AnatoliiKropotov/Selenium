@@ -4,9 +4,8 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 
 
-def check_duck():
+def check_sticker():
     try:
-        # задаём опции драйвера
         options = Options()
         options.add_argument("--start-maximized")
         driver = webdriver.Chrome(options=options)
@@ -14,24 +13,20 @@ def check_duck():
 
         driver.get("http://localhost/litecart/en/")
 
-        # находим всех уток
-        list_tabs = driver.find_elements(By.CLASS_NAME, "hover-light")
-        count_duck = len(list_tabs)
-
-        # проверяем наличие стикеров у уток
-        count_one_sticker_duck = 0
-        for i in list_tabs:
-            div_sticker = i.find_element(By.CLASS_NAME, "image-wrapper").find_elements(By.TAG_NAME, "div")
-
-            # проверяем что стикер 1
-            if len(div_sticker) == 1:
-                count_one_sticker_duck += 1
-
-        # условие на вывод
-        if count_duck == count_one_sticker_duck:
-            print(f"У каждой утки по одному нужному стикеру. Всего уток {count_duck}")
+        product_bloks_list = driver.find_elements(By.CLASS_NAME, 'listing-wrapper.products')
+        count_duck = 0
+        count_sticker = 0
+        for i in range(0, len(product_bloks_list)):
+            products_list = product_bloks_list[i].find_elements(By.CLASS_NAME, "product.column.shadow.hover-light")
+            for j in range(0, len(products_list)):
+                if len(products_list[j].find_elements(By.CSS_SELECTOR, "[class^='sticker']")) == 1:
+                    count_sticker += 1
+                count_duck += 1
+        if count_duck == count_sticker:
+            print("У каждого товара по одному стикеру: ", True)
         else:
-            print("Не у каждой утки нужное количество стикеров")
+            print("У каждого товара по одному стикеру: ", False)
+
         driver.quit()
         return
 
@@ -41,4 +36,4 @@ def check_duck():
         return
 
 
-check_duck()
+check_sticker()
