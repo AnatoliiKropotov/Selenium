@@ -16,6 +16,10 @@ driver.find_element(By.CSS_SELECTOR, '[name=password]').send_keys("admin")
 driver.find_element(By.CSS_SELECTOR, '[name=login]').click()
 
 driver.find_element(By.XPATH, '//span[text()="Catalog"]').click()
+
+# считаем количество новых товаров до добавления
+count_product_before_update = len(driver.find_elements(By.XPATH, '//a[text()="mattress"]'))
+
 driver.find_element(By.XPATH, '//a[text()=" Add New Product"]').click()
 
 # заполняем поля вкладки "General"
@@ -58,7 +62,8 @@ driver.find_element(By.CSS_SELECTOR, '[name="prices[USD]"]').send_keys("150")
 driver.find_element(By.CSS_SELECTOR, '[name="save"]').click()
 
 # проверяем что товар появился в магазине
-if driver.find_elements(By.XPATH, '//a[text()="mattress"]'):
+count_product_after_update = len(driver.find_elements(By.XPATH, '//a[text()="mattress"]'))
+if driver.find_elements(By.XPATH, '//a[text()="mattress"]') and count_product_after_update > count_product_before_update:
     print("Проверка наличия товара в каталоге: ", True)
 else:
     print("Проверка наличия товара в каталоге: ", False)
