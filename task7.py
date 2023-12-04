@@ -17,7 +17,7 @@ def check_sticker():
         count_duck = 0
         count_sticker = 0
         for i in range(0, len(product_bloks_list)):
-            products_list = product_bloks_list[i].find_elements(By.CLASS_NAME, "product.column.shadow.hover-light")
+            products_list = product_bloks_list[i].find_elements(By.CLASS_NAME, "product")
             for j in range(0, len(products_list)):
                 if len(products_list[j].find_elements(By.CSS_SELECTOR, "[class^='sticker']")) == 1:
                     count_sticker += 1
