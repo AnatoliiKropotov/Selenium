@@ -53,6 +53,7 @@ while True:
 
     except:
         print("Все товары удалены")
+        break
 
 time.sleep(3)
 print("Дошли до 3х,конец")
