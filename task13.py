@@ -1,24 +1,30 @@
-import time
 import traceback
 from selenium import webdriver
 from selenium.common import NoSuchElementException
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
+# отделяем код товара
+def code(string):
+    product_code_old = string
+    product_code = product_code_old.replace("[SKU: ", "").replace("]", "")
+    return product_code
+
+
+# функция добавления товаров в корзину
 def add_to_cart():
     driver.get("http://localhost/litecart/en/")
     driver.find_element(By.CLASS_NAME, "product").click()
     value_count = int(driver.find_element(By.CSS_SELECTOR, "[class=quantity]").text)
-    print(value_count)
 
     # проверяем наличие опций у товара
     try:
-        x = driver.find_element(By.CSS_SELECTOR, "[name=buy_now_form]").find_element(By.CSS_SELECTOR, "[class=options]")
-        print(x.get_attribute("outerHTML"))
         driver.find_element(By.CSS_SELECTOR, "[name=buy_now_form]").find_element(By.CSS_SELECTOR, "[name='options[Size]']").send_keys("Small")
     except:
-        print("У товара нет опций")
+        pass
 
     # добавляем товар в корзину
     driver.find_element(By.CSS_SELECTOR, "[name=add_cart_product]").click()
@@ -27,33 +33,48 @@ def add_to_cart():
     # ищем в корзине новое количество товаров
     try:
         driver.find_element(By.XPATH, "//span[@class='quantity' and text()='" + str(value_count) + "']")
-        print(value_count)
     except NoSuchElementException:
         print("Возникла ошибка: ", traceback.format_exc())
+        driver.quit()
         exit()
-
     return
 
+# start
 options = Options()
 options.add_argument("--start-maximized")
 driver = webdriver.Chrome(options=options)
-driver.implicitly_wait(2)
+driver.implicitly_wait(3)
 driver.get("http://localhost/litecart/en/")
 
+
+# добавляем товары в корзину
 while driver.find_element(By.CSS_SELECTOR, "[class=quantity]").text != "3":
     add_to_cart()
+
 driver.find_element(By.XPATH, "//a[text()='Checkout »']").click()
 
-# ищем кнопку "remove"
+# удаляем товары из корзины
 while True:
+    driver.refresh()
+
+    product = driver.find_element(By.CSS_SELECTOR, "[class=viewport]").find_element(By.CSS_SELECTOR, "[class=item]")
+    product_code = product.find_element(By.TAG_NAME, "span").text
+
+    # находим элемент в нижней таблице, который должен удалиться
+    element = driver.find_element(By.CSS_SELECTOR, "[class^='dataTable']").find_element(By.XPATH, "//td[@class='sku' and text()='" + code(product_code) + "']")
+
+    # жмём кнопку "remove"
+    product.find_element(By.CSS_SELECTOR, "[name=remove_cart_item]").click()
+
+    wait = WebDriverWait(driver, 5)
+    # ожидание исчезновения элемента из нижней таблицы
+    wait.until(EC.staleness_of(element))
+
+    # проверка на отсутствие элементов в корзине
     try:
-        x = driver.find_element(By.CSS_SELECTOR, "[class=dataTable.rounded-corners]").find_elements()
-
-        driver.find_element(By.CSS_SELECTOR, "[name=remove_cart_item]").click()
-
-    except:
-        print("Все товары удалены")
+        driver.find_element(By.XPATH, "//em[text()='There are no items in your cart.']")
         break
+    except:
+        pass
 
-time.sleep(3)
-print("Дошли до 3х,конец")
+driver.quit()
