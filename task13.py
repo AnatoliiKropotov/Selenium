@@ -1,6 +1,4 @@
-import traceback
 from selenium import webdriver
-from selenium.common import NoSuchElementException
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
@@ -17,35 +15,31 @@ def code(string):
 # функция добавления товаров в корзину
 def add_to_cart():
     driver.get("http://localhost/litecart/en/")
-    driver.find_element(By.CLASS_NAME, "product").click()
+    product_first = driver.find_element(By.CLASS_NAME, "product")
+    product_first_name = product_first.find_element(By.CSS_SELECTOR, "[class=name]").text
+    product_first.click()
     value_count = int(driver.find_element(By.CSS_SELECTOR, "[class=quantity]").text)
 
-    # проверяем наличие опций у товара
-    try:
+    # выставляем опции у товара, если они есть
+    if product_first_name == 'Yellow Duck':
         driver.find_element(By.CSS_SELECTOR, "[name=buy_now_form]").find_element(By.CSS_SELECTOR, "[name='options[Size]']").send_keys("Small")
-    except:
-        pass
 
     # добавляем товар в корзину
     driver.find_element(By.CSS_SELECTOR, "[name=add_cart_product]").click()
     value_count += 1
 
     # ищем в корзине новое количество товаров
-    try:
-        driver.find_element(By.XPATH, "//span[@class='quantity' and text()='" + str(value_count) + "']")
-    except NoSuchElementException:
-        print("Возникла ошибка: ", traceback.format_exc())
-        driver.quit()
-        exit()
+    # ожидание появления элемента
+    wait = WebDriverWait(driver, 5)
+    wait.until(EC.presence_of_element_located((By.XPATH, "//span[@class='quantity' and text()='" + str(value_count) + "']")))
+
     return
 
 # start
 options = Options()
 options.add_argument("--start-maximized")
 driver = webdriver.Chrome(options=options)
-driver.implicitly_wait(3)
 driver.get("http://localhost/litecart/en/")
-
 
 # добавляем товары в корзину
 while driver.find_element(By.CSS_SELECTOR, "[class=quantity]").text != "3":
@@ -66,8 +60,8 @@ while True:
     # жмём кнопку "remove"
     product.find_element(By.CSS_SELECTOR, "[name=remove_cart_item]").click()
 
-    wait = WebDriverWait(driver, 5)
     # ожидание исчезновения элемента из нижней таблицы
+    wait = WebDriverWait(driver, 5)
     wait.until(EC.staleness_of(element))
 
     # проверка на отсутствие элементов в корзине
