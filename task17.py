@@ -19,14 +19,10 @@ driver.find_element(By.CSS_SELECTOR, '[name=password]').send_keys("admin")
 driver.find_element(By.CSS_SELECTOR, '[name=login]').click()
 
 driver.find_element(By.XPATH, '//span[text()="Catalog"]').click()
-
 driver.find_element(By.XPATH, '//a[text()="Rubber Ducks"]').click()
-
-# text_colspan = driver.find_element(By.CSS_SELECTOR, '[colspan="5"]').textdr
-
 driver.find_element(By.LINK_TEXT, "Subcategory").click()
-x = driver.find_elements(By.XPATH, '//a[contains(text(), "Duck") and not(contains(text(), "Ducks"))]')
 
+x = driver.find_elements(By.XPATH, '//a[contains(text(), "Duck") and not(contains(text(), "Ducks"))]')
 count = 0
 for i in range(0, len(x)):
     x[i].click()
