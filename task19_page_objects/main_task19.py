@@ -1,4 +1,4 @@
-from selenium.task19_page_objects.application import Application
+from application import Application
 
 if __name__ == "__main__":
     app = Application()
