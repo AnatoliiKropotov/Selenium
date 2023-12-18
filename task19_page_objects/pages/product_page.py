@@ -12,8 +12,6 @@ class ProductPage:
         self.driver = driver
         self.wait = WebDriverWait(driver, 5)
 
-        # self.value_count = int(self.driver.find_element(By.CSS_SELECTOR, "[class=quantity]").text)
-
     # выставляем опции у товара, если они есть
     def set_option(self):
         if self.driver.find_element(By.ID, "box-product").find_element(By.CLASS_NAME, "title").text == 'Yellow Duck':
@@ -23,7 +21,8 @@ class ProductPage:
     def click_add_product_to_cart(self):
         self.driver.find_element(By.CSS_SELECTOR, "[name=add_cart_product]").click()
         self.value_count += 1
-        # ищем в корзине новое количество товаров
+        return self
+
 
     # ожидание появления элемента
     def wait_until_presence(self):
